@@ -115,7 +115,7 @@ function exportResults() {
 // 调用部署在后端的 API 代理，Key 保存在服务端，不暴露给前端
 const CONFIG = {
   // ★ 部署后端后，把下面的地址改为你的后端 URL
-  BACKEND_URL: 'http://localhost:3000', // Railway 部署后改为 https://your-app.railway.app
+  BACKEND_URL: 'https://nbti-test-production.up.railway.app',
 };
 
 async function callAI(systemPrompt, userPrompt) {
