@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="NBTI 职场人格测试 — 互联网语感的职场版人格测试。30道题，15个维度，27种职场人格，帮你读懂自己的职场风格与职场策略。">
+  <meta name="theme-color" content="#FF6B52">
+  <meta property="og:title" content="NBTI 职场人格测试">
+  <meta property="og:description" content="测测你是什么职场人格？27种人格+15维度雷达图+职场策略建议。">
+  <meta property="og:type" content="website">
+  <title>NBTI 职场人格测试 — 你的职场说明书</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- 预加载字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+  <!-- 悬浮背景装饰（已移除） -->
+
+  <!-- ==================== 1. Landing Page ==================== -->
+  <div class="view active" id="view-landing">
+    <div class="landing-logo" aria-hidden="true">🧬</div>
+    <h1 class="landing-title">NBTI 职场人格测试</h1>
+    <p class="landing-subtitle">Naive Behavioral Type Indicator</p>
+    <button class="btn-start" onclick="showView('questions')" style="margin-top:2rem;">
+      🚀 开始测试
+    </button>
+
+    <p class="landing-footer-note">
+      ⚠️ 本测试仅供娱乐与自我认知探索，不作职业决策依据<br>
+      数据仅保存在你的本地浏览器中
+    </p>
+  </div>
+
+  <!-- ==================== 2. Questions Page ==================== -->
+  <div class="view" id="view-questions">
+    <div class="question-header">
+      <div class="q-progress-outer">
+        <div class="q-progress-inner" id="progress-bar" style="width:0%"></div>
+      </div>
+      <div class="q-progress-text" id="progress-text">0/30</div>
+    </div>
+
+    <div id="question-container">
+      <!-- 动态渲染题目 -->
+    </div>
+  </div>
+
+  <!-- ==================== 3. Loading Page ==================== -->
+  <div class="view" id="view-loading">
+    <div class="loading-spinner-wrap">
+      <div class="loading-ring"></div>
+      <div class="loading-emoji" id="loading-personality">🧬</div>
+    </div>
+    <p class="loading-text">
+      AI 正在分析你的职场人格<span class="loading-dots"></span>
+    </p>
+    <p class="loading-subtitle">正在匹配27种人格模板 & 生成个性化建议</p>
+  </div>
+
+  <!-- ==================== 4. Results Page ==================== -->
+  <div class="view" id="view-results">
+
+    <!-- 结果卡片 -->
+    <div class="result-header">
+      <div class="result-emoji-large" id="result-emoji">🎭</div>
+      <div class="result-code-display" id="result-code">CODE</div>
+      <div class="result-name-display" id="result-name">人格名称</div>
+      <div class="result-tagline-display" id="result-tagline">一句话梗</div>
+
+      <div class="result-similarity-wrap">
+        <div class="similarity-bar">
+          <div class="similarity-bar-fill" id="similarity-bar-fill" style="width:0%"></div>
+        </div>
+        <span class="similarity-number" id="result-similarity">0%</span>
+      </div>
+
+      
+    </div>
+
+    <!-- 人格解读 -->
+    <div class="result-section">
+      <div class="section-title">📖 人格解读</div>
+      <p id="result-desc" class="result-desc"></p>
+    </div>
+
+    <!-- 个性化建议 -->
+    <div class="result-section" id="personalized-advice">
+      <!-- 动态渲染 -->
+    </div>
+
+    <!-- 雷达图 -->
+    <div class="result-section">
+      <div class="section-title">📊 15维雷达画像</div>
+      <div class="radar-wrap">
+        <canvas id="radar-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- 15维详解（合并：分解条 + 详细解读） -->
+    <div class="result-section">
+      <div class="section-title">📊 15维详解</div>
+      <div id="dim-breakdown">
+        <!-- 动态渲染：每个维度 = 进度条 + 等级 + 描述，按五大模型分组 -->
+      </div>
+    </div>
+
+    <!-- 推荐岗位 -->
+    <div class="result-section">
+      <div class="section-title">💼 适合你的岗位方向</div>
+      <div class="job-tags" id="result-jobs">
+        <!-- 动态渲染 -->
+      </div>
+    </div>
+
+    <!-- 职场策略（简略版） -->
+    <div class="result-section">
+      <div class="section-title">🎯 面试策略参考</div>
+      <div id="interview-strategy">
+        <!-- 动态渲染：基于人格类型的简略策略，不包含用户信息 -->
+      </div>
+    </div>
+
+    <!-- 解锁个性化修炼指南 -->
+    <div class="result-section" id="unlock-section">
+      <div style="text-align:center;padding:20px 12px;">
+        <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
+        <h3 style="margin-bottom:8px;">解锁个性化职场修炼指南</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:20px;max-width:320px;margin-left:auto;margin-right:auto;">
+          简历优化 · 模拟面试 · 岗位分析——多Agent协同系统为你定制全套求职方案
+        </p>
+        <button class="btn-start" onclick="openGuideSystem()" style="font-size:0.95rem;padding:14px 36px;position:relative;overflow:hidden;">
+          立即解锁 →
+        </button>
+      </div>
+    </div>
+
+    <!-- 历史记录 -->
+    <div class="result-section">
+      <div class="section-title">📜 你的测试历史</div>
+      <div id="history-list">
+        <!-- 动态渲染 -->
+      </div>
+      <div style="text-align:right;margin-top:12px;">
+        <button class="btn-clear" onclick="clearHistory()">🗑️ 清空历史</button>
+      </div>
+    </div>
+
+    <!-- 分割线 -->
+    <div class="section-divider"></div>
+
+    <!-- 分享 -->
+    <div class="result-section">
+      <div class="section-title">📤 分享结果</div>
+      <div class="share-buttons">
+        <button class="btn-share" id="btn-share-copy">📋 复制结果</button>
+        <button class="btn-share" id="btn-share-wechat">💬 微信分享</button>
+        <button class="btn-share btn-share-primary" id="btn-retry">🔄 再测一次</button>
+      </div>
+    </div>
+
+    <!-- 免责声明 -->
+    <div class="disclaimer-box">
+      <div class="disclaimer-icon">⚠️</div>
+      <p class="disclaimer-text" id="disclaimer-short">仅供娱乐 | 非心理诊断 | 不作职业决策依据</p>
+    </div>
+
+  </div> <!-- /results -->
+
+  <!-- ==================== Scripts ==================== -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- 内联 fallback：如果 JS 未加载，至少显示 landing -->
+  <noscript>
+    <div style="text-align:center;padding:40px;font-family:sans-serif;">
+      <h1>NBTI 职场人格测试</h1>
+      <p>请启用 JavaScript 以进行测试。</p>
+    </div>
+  </noscript>
+
+</body>
+</html>
