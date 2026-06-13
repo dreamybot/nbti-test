@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NBTI 职场修炼指南 — AI 多Agent求职系统</title>
+  <meta name="theme-color" content="#0F1117">
+  <meta name="description" content="AI 多Agent求职辅助系统 — 简历优化 · 模拟面试 · 岗位情报分析">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --accent:#EB6B55;--accent-hover:#D45A45;--accent-glow:rgba(235,107,85,0.15);
+      --bg:#0F1117;--surface:#181B22;--surface-elevated:#1E222B;--border:#2A2E3A;
+      --text:#EDEDEF;--text-secondary:#9B9CA8;--text-muted:#5F6170;
+      --radius:12px;--radius-sm:6px;--radius-lg:16px;--radius-pill:999px;
+      --shadow-lg:0 12px 40px rgba(0,0,0,0.45);
+      --ease:cubic-bezier(0.16,1,0.3,1);
+      --font:"Inter","SF Pro Display",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+      --font-mono:"SF Mono","JetBrains Mono",monospace;
+    }
+    html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+    body{
+      font-family:var(--font);color:var(--text);background:var(--bg);
+      line-height:1.6;min-height:100dvh;overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    /* ===== 导航 ===== */
+    nav{
+      display:flex;align-items:center;justify-content:space-between;
+      max-width:1100px;margin:0 auto;padding:20px 24px;
+    }
+    .nav-logo{font-weight:800;font-size:1.05rem;letter-spacing:-0.02em}
+    .nav-logo span{color:var(--accent)}
+    .nav-links{display:flex;gap:24px;align-items:center}
+    .nav-links a{color:var(--text-secondary);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color .2s}
+    .nav-links a:hover{color:var(--text)}
+    .nav-cta{
+      padding:8px 20px;background:var(--accent);color:#fff;border-radius:var(--radius-pill);
+      font-size:0.82rem;font-weight:600;text-decoration:none;transition:background .2s
+    }
+    .nav-cta:hover{background:var(--accent-hover)}@media(max-width:640px){.nav-links{display:none}}
+
+    /* ===== Hero ===== */
+    .hero{
+      max-width:1100px;margin:0 auto;padding:80px 24px 60px;
+      display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+    }
+    .hero-content{max-width:520px}
+    .hero-badge{
+      display:inline-block;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;
+      color:var(--accent);margin-bottom:16px;font-family:var(--font-mono)
+    }
+    .hero h1{
+      font-size:2.8rem;font-weight:800;line-height:1.15;letter-spacing:-0.03em;
+      margin-bottom:16px;text-wrap:balance
+    }
+    .hero h1 .highlight{color:var(--accent)}
+    .hero p{
+      font-size:1.05rem;color:var(--text-secondary);line-height:1.7;
+      margin-bottom:32px;text-wrap:balance;max-width:440px
+    }
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .btn-primary{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:14px 32px;background:var(--accent);color:#fff;
+      border-radius:var(--radius-pill);font-size:1rem;font-weight:600;
+      text-decoration:none;transition:background .2s,transform .2s,box-shadow .2s;
+      box-shadow:0 4px 20px rgba(235,107,85,0.25)
+    }
+    .btn-primary:hover{background:var(--accent-hover);transform:translateY(-2px)}
+    .btn-secondary{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:14px 28px;background:var(--surface);color:var(--text);
+      border:1px solid var(--border);border-radius:var(--radius-pill);
+      font-size:1rem;font-weight:500;text-decoration:none;
+      transition:border-color .2s,background .2s
+    }
+    .btn-secondary:hover{border-color:var(--text-muted);background:var(--surface-elevated)}
+
+    .hero-visual{
+      position:relative;display:flex;align-items:center;justify-content:center;
+    }
+    .hero-graphic{
+      width:100%;max-width:420px;aspect-ratio:1;
+      background:radial-gradient(circle at 30% 40%,rgba(235,107,85,0.08),transparent 70%),
+                 radial-gradient(circle at 70% 60%,rgba(235,107,85,0.05),transparent 50%);
+      border-radius:50%;display:flex;align-items:center;justify-content:center;
+      position:relative;
+    }
+    .hero-graphic-inner{
+      display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;
+      position:relative;z-index:1;
+    }
+    .hero-icon-box{
+      width:80px;height:80px;border-radius:var(--radius-lg);
+      background:var(--surface);border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;
+      font-size:2rem;backdrop-filter:blur(8px);
+      transition:transform .3s var(--ease),border-color .3s var(--ease);
+    }
+    .hero-icon-box:hover{transform:translateY(-4px);border-color:var(--accent)}
+    .hero-icon-box:nth-child(2){margin-top:20px}
+    .hero-icon-box:nth-child(3){margin-top:-10px}
+    .hero-icon-box:nth-child(4){margin-top:-5px}
+    .hero-icon-box:nth-child(5){margin-top:15px}
+    .hero-icon-box:nth-child(6){margin-top:-15px}
+
+    @media(max-width:800px){
+      .hero{grid-template-columns:1fr;padding:48px 24px 40px;gap:40px}
+      .hero-content{max-width:100%}
+      .hero h1{font-size:2rem}
+      .hero-visual{order:-1}
+      .hero-graphic{max-width:300px}
+      .hero-icon-box{width:64px;height:64px;font-size:1.5rem}
+    }
+    @media(max-width:480px){
+      .hero h1{font-size:1.7rem}
+      .hero-actions{flex-direction:column}
+      .hero-actions a{justify-content:center}
+    }
+
+    /* ===== 分隔 ===== */
+    .divider{
+      max-width:1100px;margin:0 auto;padding:0 24px;
+    }
+    .divider-line{height:1px;background:var(--border);width:100%}
+
+    /* ===== 特性 ===== */
+    .features{
+      max-width:1100px;margin:0 auto;padding:80px 24px;
+    }
+    .features-header{text-align:center;margin-bottom:48px}
+    .features-header h2{
+      font-size:2rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px
+    }
+    .features-header p{color:var(--text-secondary);font-size:1rem}
+    .feature-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+    .feature-card{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius-lg);padding:28px 24px;
+      transition:transform .3s var(--ease),border-color .3s var(--ease),box-shadow .3s var(--ease);
+    }
+    .feature-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:var(--shadow-lg)}
+    .feature-icon{
+      width:48px;height:48px;border-radius:var(--radius);
+      background:var(--accent-subtle);display:flex;align-items:center;justify-content:center;
+      font-size:1.4rem;margin-bottom:16px
+    }
+    .feature-card h3{font-size:1.05rem;font-weight:600;margin-bottom:6px}
+    .feature-card p{font-size:0.85rem;color:var(--text-muted);line-height:1.6;margin-bottom:14px}
+    .feature-tag{
+      display:inline-block;font-size:0.7rem;font-weight:600;padding:3px 10px;
+      border-radius:4px;background:rgba(235,107,85,0.1);color:var(--accent)
+    }
+    @media(max-width:700px){.feature-grid{grid-template-columns:1fr}}
+
+    /* ===== 流程 ===== */
+    .steps{
+      max-width:1100px;margin:0 auto;padding:80px 24px;
+    }
+    .steps-header{text-align:center;margin-bottom:48px}
+    .steps-header h2{
+      font-size:2rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px
+    }
+    .steps-header p{color:var(--text-secondary);font-size:1rem}
+    .step-row{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+    }
+    .step-item{text-align:center;padding:24px 16px}
+    .step-num{
+      width:40px;height:40px;border-radius:50%;
+      background:var(--accent);color:#fff;display:inline-flex;
+      align-items:center;justify-content:center;
+      font-size:0.85rem;font-weight:700;margin-bottom:14px
+    }
+    .step-item h4{font-size:1rem;font-weight:600;margin-bottom:6px}
+    .step-item p{font-size:0.85rem;color:var(--text-muted);line-height:1.6}
+    .step-arrow{color:var(--text-muted);font-size:1.5rem;align-self:center;text-align:center}
+    @media(max-width:700px){.step-row{grid-template-columns:1fr}.step-arrow{transform:rotate(90deg)}}
+
+    /* ===== CTA ===== */
+    .cta{
+      max-width:1100px;margin:0 auto;padding:60px 24px 80px;text-align:center;
+    }
+    .cta-box{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius-lg);padding:56px 32px;
+    }
+    .cta-box h2{
+      font-size:1.8rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px
+    }
+    .cta-box p{
+      color:var(--text-secondary);font-size:1rem;margin-bottom:28px;max-width:500px;margin-left:auto;margin-right:auto
+    }
+
+    /* ===== Footer ===== */
+    footer{
+      text-align:center;padding:32px 24px;
+      font-size:0.78rem;color:var(--text-muted)
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== 导航 ===== -->
+  <nav>
+    <div class="nav-logo">NBTI<span>.</span></div>
+    <div class="nav-links">
+      <a href="#features">功能介绍</a>
+      <a href="#steps">如何使用</a>
+      <a href="guide.html" class="nav-cta">开始使用 →</a>
+    </div>
+    <a href="guide.html" class="nav-cta" style="display:none;" id="mobile-cta">开始使用</a>
+  </nav>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">AI-POWERED · 多AGENT协同</div>
+      <h1>你的<span class="highlight">AI 求职教练</span><br>简历·面试·岗位情报</h1>
+      <p>三个 AI Agent 协同工作：优化你的简历、模拟真实面试、分析目标岗位——从测试到 offer 的全链路求职辅助。</p>
+      <div class="hero-actions">
+        <a href="guide.html" class="btn-primary">🚀 开始修炼</a>
+        <a href="#features" class="btn-secondary">了解详情</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-graphic">
+        <div class="hero-graphic-inner">
+          <div class="hero-icon-box">📄</div>
+          <div class="hero-icon-box">🎤</div>
+          <div class="hero-icon-box">🔍</div>
+          <div class="hero-icon-box">🤖</div>
+          <div class="hero-icon-box">⚡</div>
+          <div class="hero-icon-box">🎯</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <!-- ===== 特性 ===== -->
+  <section class="features" id="features">
+    <div class="features-header">
+      <h2>三个 Agent，覆盖求职全链路</h2>
+      <p>每个 Agent 都是一个独立的 AI 专家，协同工作为你提供完整求职支持</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <h3>简历优化 Agent</h3>
+        <p>粘贴目标岗位 JD 和你的简历，AI 自动分析匹配度、指出缺失能力点、给出逐段优化建议并生成优化版简历。</p>
+        <span class="feature-tag">JD 匹配分析</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎤</div>
+        <h3>模拟面试 Agent</h3>
+        <p>基于你的目标岗位和 JD，AI 实时生成有针对性的面试题。逐题作答后获得 AI 评分和详细反馈，附带参考框架。</p>
+        <span class="feature-tag">AI 出题 + 评分</span>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>岗位情报 Agent</h3>
+        <p>AI 深度分析目标岗位 JD，提取核心能力要求、预测面试考察重点、梳理从入门到资深的成长路径。</p>
+        <span class="feature-tag">市场洞察</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <!-- ===== 流程 ===== -->
+  <section class="steps" id="steps">
+    <div class="steps-header">
+      <h2>三步开启你的 AI 求职修炼</h2>
+      <p>无需注册，打开即用</p>
+    </div>
+    <div class="step-row">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <h4>完善个人信息</h4>
+        <p>填写专业、目标岗位和招聘要求 JD，AI Agent 将基于这些信息为你定制方案</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <h4>选择 AI Agent</h4>
+        <p>在简历优化、模拟面试、岗位情报三个 Agent 中选择你当前需要的帮助</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <h4>获取 AI 分析结果</h4>
+        <p>每个 Agent 实时生成针对性分析，可导出结果为文本文件保存</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div></div>
+
+  <!-- ===== CTA ===== -->
+  <section class="cta">
+    <div class="cta-box">
+      <h2>准备开始了吗？</h2>
+      <p>免费使用，无需注册，打开即用。</p>
+      <a href="guide.html" class="btn-primary" style="font-size:1.05rem;padding:16px 40px;">
+        🚀 进入职场修炼指南
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    NBTI 职场修炼指南 · AI 多Agent求职辅助系统 · 数据仅保存在本地浏览器
+  </footer>
+
+  <script>
+    // 移动端导航显示
+    if (window.innerWidth <= 640) {
+      document.getElementById('mobile-cta').style.display = 'inline-flex';
+    }
+  </script>
+</body>
+</html>

@@ -111,48 +111,45 @@ function exportResults() {
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'NBTI职场修炼指南.txt'; a.click();
 }
 
-// ==================== AI 服务（后端代理模式）====================
-// 调用部署在后端的 API 代理，Key 保存在服务端，不暴露给前端
+// ==================== AI 服务 (DeepSeek API) ====================
+// 【开发配置】在此填入你的 DeepSeek API Key
 const CONFIG = {
-  // ★ 部署后端后，把下面的地址改为你的后端 URL
-  BACKEND_URL: 'http://localhost:3000', // Railway 部署后改为 https://your-app.railway.app
+  API_KEY: '', // 部署前已移除，使用前请在浏览器控制台执行 localStorage.setItem('nbti_apikey', '你的key')
+  MODEL: 'deepseek-chat',
+  ENDPOINT: 'https://api.deepseek.com/v1/chat/completions'
 };
 
 async function callAI(systemPrompt, userPrompt) {
-  if (!CONFIG.BACKEND_URL || CONFIG.BACKEND_URL.includes('localhost')) {
-    // 开发模式：直接调用 DeepSeek（需在 localStorage 设置 key）
-    let key = localStorage.getItem('nbti_apikey') || '';
-    if (!key) {
-      key = prompt('【开发模式】请输入你的 DeepSeek API Key（仅保存在本地浏览器）:');
-      if (key) localStorage.setItem('nbti_apikey', key);
-    }
-    if (!key) throw new Error('需要 API Key');
-    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.7, max_tokens: 2000
-      })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error?.message || 'API请求失败');
-    return data.choices?.[0]?.message?.content || '';
+  // 优先用 CONFIG，其次用 localStorage（方便部署后配置）
+  let key = CONFIG.API_KEY;
+  if (!key) {
+    key = localStorage.getItem('nbti_apikey') || '';
   }
-
-  // 生产模式：通过后端代理调用
-  const res = await fetch(CONFIG.BACKEND_URL + '/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ systemPrompt, userPrompt })
+  if (!key) {
+    key = prompt('请输入你的 DeepSeek API Key（不会上传到服务器）:');
+    if (key) localStorage.setItem('nbti_apikey', key);
+  }
+  if (!key) {
+    throw new Error('需要 DeepSeek API Key 才能使用 AI 功能');
+  }
+  const res = await fetch(CONFIG.ENDPOINT, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+    body: JSON.stringify({
+      model: CONFIG.MODEL,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      temperature: 0.7,
+      max_tokens: 2000
+    })
   });
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.error?.message || 'API请求失败');
+  }
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'API请求失败');
-  return data.content;
+  return data.choices?.[0]?.message?.content || '';
 }
 
 // ==================== JD解析工具 ====================
