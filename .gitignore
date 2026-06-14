@@ -1,3 +1,8 @@
 node_modules/
 .edgeone/
 *.log
+nbti deploy/
+
+# NBTI 核心创意数据（原创人格体系+测试题库）
+# 线上演示版: https://nbtitiyanban.netlify.app/
+js/data.js
